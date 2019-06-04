@@ -1,10 +1,17 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-const routes: Routes = [];
+import { UserListPage } from './pages/UserList/UserList.page'
+import { UserPage } from './pages/User/User.page'
+
+const routes: Routes = [
+  { path: '', component: UserListPage },
+  { path: 'user/:id', component: UserPage }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
+
 export class AppRoutingModule { }
