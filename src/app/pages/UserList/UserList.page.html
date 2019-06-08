@@ -1,3 +1,20 @@
 <div>
-    page user list
+    <load-component [show]="loading"></load-component>
+
+    <button [routerLink]="['/user']">
+      add
+    </button>
+
+    <ul *ngFor="let user of users;">
+      <li>
+        <div>
+            {{ user.name | uppercase }}
+        </div>
+        <div>
+            {{ user.email }}
+        </div>
+        <a [routerLink]="['/user', user.id]">editar</a> | 
+        <a [routerLink]="['/']" (click)="deleteUser(user.idDoc)">delete</a>
+      </li>
+    </ul>
 </div>

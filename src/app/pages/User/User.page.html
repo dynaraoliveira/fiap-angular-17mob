@@ -1,11 +1,38 @@
 <div>
-    <load-component [show]="loading"></load-component>
-    <input type="text" name="name" (change)="setValue($event)" /><br>
-    <input type="email" name="email" (change)="setValue($event)" /><br>
-    <input type="number" name="age" (change)="setValue($event)" /><br>
-    <input type="text" name="phone" (change)="setValue($event)" /><br>
+  <load-component [show]="loading"></load-component>
+
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <div>
+      <input type="text" name="name" placeholder="name" formControlName="name" />
+      <div *ngIf="userForm.controls.name.invalid && userForm.controls.name.touched">
+        O campo nome é obrigatório
+      </div>
+    </div>
+
+    <div> 
+      <input type="email" name="email" placeholder="email" formControlName="email" />
+      <div *ngIf="userForm.controls.email.invalid && userForm.controls.email.touched">
+        O campo email é obrigatório
+      </div>
+    </div>
+
+    <div>
+        <input type="number" name="age" placeholder="age" formControlName="age" />
+        <div *ngIf="userForm.controls.age.invalid && userForm.controls.age.touched">
+          O campo age é obrigatório
+        </div>
+    </div>
     
-    <button (click)="createUser()">
-        Criar
+    <div>
+        <input type="tel" name="phone" placeholder="phone" formControlName="phone" />
+        <div *ngIf="userForm.controls.phone.invalid && userForm.controls.phone.touched">
+          O campo phone é obrigatório
+        </div>
+    </div>
+
+    <button type="submit" [disabled]="!userForm.valid">
+      <span *ngIf="!userId">Criar</span>
+      <span *ngIf="userId">Atualizar</span>
     </button>
+  </form>
 </div>
