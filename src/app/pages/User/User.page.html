@@ -1,5 +1,10 @@
 <div>
     <load-component [show]="loading"></load-component>
+    <input type="text" name="name" (change)="setValue($event)" /><br>
+    <input type="email" name="email" (change)="setValue($event)" /><br>
+    <input type="number" name="age" (change)="setValue($event)" /><br>
+    <input type="text" name="phone" (change)="setValue($event)" /><br>
+    
     <button (click)="createUser()">
         Criar
     </button>

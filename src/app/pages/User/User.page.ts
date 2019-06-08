@@ -8,6 +8,8 @@ import { UsersService } from '../../services/Users.service';
 })
 
 export class UserPage {
+    private userId: string = '';
+    private data: object = {};
     private loading: boolean = false;
 
     constructor(
@@ -17,6 +19,22 @@ export class UserPage {
 
     ngOnInit() {
         console.log(this.route.snapshot.paramMap.get('id'));
+    }
+
+    private getUser(id: string) {
+        this.usersService.getById(id).subscribe((data: any) => {
+            console.log(data[0].payload.doc.data())
+        })
+    }
+
+    setValue(event) {
+        const { name, value } = event.target;
+        this.data = {
+            ...this.data,
+            [name]: value,
+        }
+
+        console.log(this.data);
     }
 
     createUser() {

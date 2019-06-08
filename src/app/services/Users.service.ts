@@ -12,9 +12,7 @@ export class UsersService {
     ) {}
 
     getById(id: string) {
-        return this.db.collection(
-            'users', ref => ref.where('id', '==', id)
-        )
+        return this.db.collection('users', ref => ref.where('id', '==', id)).snapshotChanges();
     }
 
     create(data) {
