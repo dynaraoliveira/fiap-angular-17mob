@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'
-
+import { ActivatedRoute } from '@angular/router'
 import { UsersService } from '../../services/Users.service';
 
 @Component({
@@ -8,11 +8,16 @@ import { UsersService } from '../../services/Users.service';
 })
 
 export class UserPage {
+    private loading: boolean = false;
+
     constructor(
+        private route: ActivatedRoute,
         private usersService: UsersService
     ) {}
 
-    private loading: boolean = false;
+    ngOnInit() {
+        console.log(this.route.snapshot.paramMap.get('id'));
+    }
 
     createUser() {
         this.loading = true;
