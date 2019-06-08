@@ -1,6 +1,8 @@
 import { Component } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { UsersService } from '../../services/Users.service';
+import { NgIf } from '@angular/common';
+import { AngularFireModule } from '@angular/fire';
 
 @Component({
     templateUrl: './User.page.html',
@@ -18,13 +20,23 @@ export class UserPage {
     ) {}
 
     ngOnInit() {
-        console.log(this.route.snapshot.paramMap.get('id'));
+        this.userId = this.route.snapshot.paramMap.get('id');
+        console.log('userId', this.userId)
+        this.getUser(this.userId);
     }
 
     private getUser(id: string) {
-        this.usersService.getById(id).subscribe((data: any) => {
-            console.log(data[0].payload.doc.data())
-        })
+        if (id != null) {
+            this.usersService.getById(id).subscribe((data: any) => {
+                console.log(data[0].payload.doc.data())
+            })
+        } else {
+            this.usersService.get().subscribe((data: any) => {
+                data.forEach(element => {
+                    console.log(element.payload.doc.data())
+                });
+            })
+        }
     }
 
     setValue(event) {

@@ -14,8 +14,13 @@ export class UsersService {
     getById(id: string) {
         return this.db.collection('users', ref => ref.where('id', '==', id)).snapshotChanges();
     }
+    
+    get() {
+        return this.db.collection('users').snapshotChanges();
+    }
 
     create(data) {
+        console.log(data)
         return this.db.collection('users').add({
             id: uuid(),
             ...data,
