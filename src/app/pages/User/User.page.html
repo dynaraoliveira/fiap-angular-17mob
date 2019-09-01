@@ -1,38 +1,21 @@
-<div>
-  <load-component [show]="loading"></load-component>
+<header-component></header-component>
 
-  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-    <div>
-      <input type="text" name="name" placeholder="name" formControlName="name" />
-      <div *ngIf="userForm.controls.name.invalid && userForm.controls.name.touched">
-        O campo nome é obrigatório
-      </div>
-    </div>
+<div class="form-register container">
+  <form (ngSubmit)="onSubmit()">
+    <h1 class="h3 mb-3 font-weight-normal">{{ title }}</h1>
 
-    <div> 
-      <input type="email" name="email" placeholder="email" formControlName="email" />
-      <div *ngIf="userForm.controls.email.invalid && userForm.controls.email.touched">
-        O campo email é obrigatório
-      </div>
-    </div>
-
-    <div>
-        <input type="number" name="age" placeholder="age" formControlName="age" />
-        <div *ngIf="userForm.controls.age.invalid && userForm.controls.age.touched">
-          O campo age é obrigatório
-        </div>
-    </div>
+    <input type="text" name="name" placeholder="Nome" [(ngModel)]="user.name" class="form-control" required autofocus/>
+    <input type="text" name="email" placeholder="E-mail" [(ngModel)]="user.email" class="form-control" required />
+    <input type="text" name="cpf" placeholder="CPF" [(ngModel)]="user.cpf" class="form-control" />
+    <input type="text" name="cep" placeholder="CEP" [(ngModel)]="user.cep" class="form-control" />
+    <input type="text" name="address" placeholder="Endereço" [(ngModel)]="user.address" class="form-control" />
+    <input type="text" name="complement" placeholder="Complemento" [(ngModel)]="user.complement" class="form-control" />
+    <input type="text" name="number" placeholder="Número" [(ngModel)]="user.number" class="form-control" />
     
-    <div>
-        <input type="tel" name="phone" placeholder="phone" formControlName="phone" />
-        <div *ngIf="userForm.controls.phone.invalid && userForm.controls.phone.touched">
-          O campo phone é obrigatório
-        </div>
-    </div>
-
-    <button type="submit" [disabled]="!userForm.valid">
-      <span *ngIf="!userId">Criar</span>
-      <span *ngIf="userId">Atualizar</span>
-    </button>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Salvar</button>
+      
   </form>
+
 </div>
+
+<load-component *ngIf="loading"></load-component>

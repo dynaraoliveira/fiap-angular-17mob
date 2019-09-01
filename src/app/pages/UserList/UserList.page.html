@@ -1,20 +1,25 @@
-<div>
-    <load-component [show]="loading"></load-component>
+<header-component></header-component>
 
-    <button [routerLink]="['/user']">
-      add
-    </button>
-
-    <ul *ngFor="let user of users;">
-      <li>
-        <div>
-            {{ user.name | uppercase }}
-        </div>
-        <div>
-            {{ user.email }}
-        </div>
-        <a [routerLink]="['/user', user.id]">editar</a> | 
-        <a [routerLink]="['/']" (click)="deleteUser(user.idDoc)">delete</a>
-      </li>
-    </ul>
+<div class="container">
+  <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+    <input #search type="text" name="search" placeholder="Buscar" class="form-control" required autofocus/>
+    <div class="col-md-auto">
+      <button class="btn btn-lg btn-primary btn-block" type="submit" (click)="setFilterBy(search.value)">Buscar</button>
+    </div>
+  </div>
+  
+  <ul class="list-group list-group-flush" *ngFor="let user of users | filter: filterBy | sort: 'name';">
+      <li class="list-group-item">
+      <div>
+          {{ user.name | uppercase }}
+      </div>
+      <div>
+          {{ user.email }}
+      </div>
+      <a (click)="edit(user.id)" >editar</a> | 
+      <a (click)="delete(user.id)">delete</a>
+    </li>
+  </ul>
 </div>
+
+<load-component *ngIf="loading"></load-component>

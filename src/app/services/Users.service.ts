@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 import uuid from 'uuid';
 
 @Injectable({ providedIn: 'root' })
 export class UsersService {
   constructor(
-    private http: HttpClient,
-    private db: AngularFirestore
+    private db: AngularFirestore,
+    private fireAuth: AngularFireAuth,
   ) { }
 
   get() {
@@ -26,11 +26,19 @@ export class UsersService {
     })
   }
 
-  update(idDoc: string, data) {
-    return this.db.collection('users').doc(idDoc).update(data)
+  update(id: string, data) {
+    return this.db.collection('users').doc(id).update(data)
   }
 
-  delete(idDoc: string) {
-    return this.db.collection('users').doc(idDoc).delete()
+  delete(id: string) {
+    return this.db.collection('users').doc(id).delete()
   }
+
+  login(user){
+		return this.fireAuth.auth.signInWithEmailAndPassword(user.email, user.password)
+	}
+
+	logout(){
+		return this.fireAuth.auth.signOut()
+	}
 }

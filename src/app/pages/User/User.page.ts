@@ -1,72 +1,106 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormControl, Validators } from "@angular/forms";
-
-import { UsersService } from '../../services/Users.service';
+import { Component, OnInit } from '@angular/core';
+import { Router , ActivatedRoute } from '@angular/router';
+import { AngularFirestore, AngularFirestoreDocument , AngularFirestoreCollection } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+import { User } from '../Model/User';
 
 @Component({
   templateUrl: './User.page.html',
   styleUrls: ['./User.page.css']
 })
 
-export class UserPage {
-  userForm = new FormGroup({
-    name: new FormControl('', Validators.required),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    age: new FormControl('', Validators.required),
-    phone: new FormControl('', Validators.required),
-  });
+export class UserPage implements OnInit {
 
-  private userId: string = '';
-  private loading: boolean = false;
-  private idDoc: string = '';
+  user: User;
+	loading: boolean = true;
+	title: string = "Novo usuário";
 
-  constructor(
+	private collection: AngularFirestoreCollection<User>;
+	private doc: AngularFirestoreDocument<User>;
+	private item: Observable<User>;
+	
+	constructor(
+    private router: Router, 
     private route: ActivatedRoute,
-    private router: Router,
-    private usersService: UsersService
-  ) { }
+    private firestore: AngularFirestore
+    ) {
+      let id = this.route.snapshot.paramMap.get('id');
+      this.collection = firestore.collection<User>('users');
 
-  ngOnInit() {
-    this.userId = this.route.snapshot.paramMap.get('id');
-    if (this.userId) this.getUser(this.userId);
-  }
-
-  private getUser(id: string) {
-    this.usersService.getById(id).subscribe((data: any) => {
-      const { doc } = data[0].payload
-      const result = doc.data();
-      
-      this.idDoc = doc.id;
-
-      Object.keys(result)
-      .filter(item => item !== 'id')
-      .forEach((item) => {
-        this.userForm.controls[item].setValue(result[item]);
-      })
-    })
-
-  }
-
-  onSubmit() {
-    this.loading = true;
-
-    if (!this.userId) {
-
-      this.usersService.create(this.userForm.value)
-      .then(() => this.router.navigate(['/']))
-      .catch((err) => this.loading = false);
-
-    } else {
-
-      this.usersService.update(
-        this.idDoc,
-        this.userForm.value,
-      )
-      .then(() => this.router.navigate(['/']))
-      .catch((err) => this.loading = false);
-
+      if (this.getUser()) {
+        this.doc = firestore.doc<User>('users/'+id);
+        this.item = this.doc.valueChanges();
+        this.title = "Editar usuário";
+      }
     }
 
+	ngOnInit() {
+		this.loadUser();
+	}
+
+	loadUser(): void {
+		if (!this.getUser()) {
+			this.user = new User();
+			this.loading = false;
+		} else {
+			this.loading = true;
+			this.item.subscribe(user=>{
+				this.user = new User();
+				this.user.name = user.name;
+				this.user.email = user.email;
+				this.user.cpf = user.cpf;
+				this.user.address = user.address;
+				this.user.number = user.number;
+				this.user.complement = user.complement;
+				this.user.cep = user.cep;
+				this.loading = false;
+			})
+		}
+	}
+
+	getUser(): string {
+    return this.route.snapshot.paramMap.get('id') || null	;
   }
+
+	onSubmit(): void {
+		if (this.getUser()) {
+			this.update();
+			return
+		}
+
+		this.create();
+	}
+
+	create(): void {
+		this.loading = true;
+    let user = this.getUserObject();
+    
+		this.collection.add(user as User)
+		.then(_ =>{
+			this.router.navigate(['/']);
+		})
+		.catch(err=>{
+			this.loading = false;
+			alert(err);
+		})
+	}	
+
+	update(): void {
+    this.loading = true;
+		let user = this.getUserObject();
+		
+		this.doc.update(user)
+		.then(_ =>{
+			this.router.navigate(['/']);
+		})
+		.catch(err=>{
+			this.loading = false;
+			alert(err);
+		})
+	}
+
+	getUserObject(): Object {
+		return Object.assign({}, this.user);
+  }
+  
 }
